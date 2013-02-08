@@ -1,15 +1,12 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 0.4
-Release: 2%{?dist}
+Version: 0.5
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Libraries
-# This is a Red Hat maintained package which is specific to
-# our distribution.  Thus the source is only available from
-# within this srpm.
 %define realname blivet
-Source0: %{realname}-%{version}.tar.gz
+Source0: http://git.fedorahosted.org/cgit/blivet.git/snapshot/%{realname}-%{version}.tar.gz
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -42,6 +39,9 @@ Requires: lvm2
 Requires: dosfstools
 Requires: e2fsprogs >= %{e2fsver}
 Requires: btrfs-progs
+%ifarch %{ix86} x86_64 ia64
+Requires: dmidecode
+%endif
 %if ! 0%{?rhel}
 Requires: hfsplus-tools
 %endif
@@ -74,10 +74,31 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
-* Fri Jan 25 2013 David Lehman <dlehman@redhat.com> - 0.4-2
-- Update COPYING file.
-- Remove #! line from tsort.py.
-- Add a bunch missing dependency version macros to python-blivet.spec.
+* Fri Feb 08 2013 David Lehman <dlehman@redhat.com> - 0.5-1
+- Add mountOnly to turnOnFilesystems (bcl)
+- Update lvm scanning to account for new ignored device handling. (dlehman)
+- Scan in all devices and then hide those that use ignored disks. (dlehman)
+- Adjust child counts correctly when unhiding a device. (dlehman)
+- Generate lvm config args each time they're needed/used. (dlehman)
+- Add ability to grab 70-anaconda.rules udev data directly. (dlehman)
+- Add support for active luks mappings at populate time. (dlehman)
+- Don't require nss, required only for escrow key support. (dlehman)
+- Update the TODO list. (dlehman)
+- Add missing constant DMI_CHASSIS_VENDOR. (dlehman)
+- Allow for multiple calls to DeviceTree.processActions. (#881023,#846573) (dlehman)
+- Use CGit snaphot URL for Source in specfile. (dlehman)
+- Streamline some logic in storageInitialize. (dlehman)
+- Don't re-add deleted or hidden devices during DeviceTree.populate. (dlehman)
+- Only run findExistingInstallations and start iscsi, &c in installer mode. (dlehman)
+- Do not change device status during populate in normal mode. (#817064) (dlehman)
+- Drop old code related to saving clearPartType from pre-f18. (dlehman)
+- check for skipping bootloader in doIt (bcl)
+- check for stage1 when not installing bootloader (#882065,#895232) (bcl)
+- explicitly detect iso9660 on a disk (#903158) (bcl)
+- Fix several problems in python-blivet.spec. (dlehman)
+- Remove #!/usr/bin/python from tsort.py (dlehman)
+- Update COPYING file. (dlehman)
+- Add a Requires for dmidecode on x86. (dlehman)
 
 * Sun Jan 20 2013 David Lehman <dlehman@redhat.com> - 0.4-1
 - Use a two-part version number instead of three. (dlehman)
