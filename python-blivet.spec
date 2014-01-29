@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 0.38
+Version: 0.39
 Release: 1%{?dist}
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -18,6 +18,7 @@ Source0: http://git.fedorahosted.org/cgit/blivet.git/snapshot/%{realname}-%{vers
 %define e2fsver 1.41.0
 %define pythoncryptsetupver 0.1.1
 %define utillinuxver 2.15.1
+%define lvm2ver 2.02.99
 
 BuildArch: noarch
 BuildRequires: gettext
@@ -32,7 +33,7 @@ Requires: device-mapper >= %{dmver}
 Requires: cryptsetup
 Requires: python-cryptsetup >= %{pythoncryptsetupver}
 Requires: mdadm
-Requires: lvm2
+Requires: lvm2 >= %{lvm2ver}
 Requires: dosfstools
 Requires: e2fsprogs >= %{e2fsver}
 Requires: btrfs-progs
@@ -61,6 +62,12 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
+* Tue Jan 28 2014 Brian C. Lane <bcl@redhat.com> - 0.39-1
+- escrow: make sure the output directory exists (#1026653) (wwoods)
+- provide a more useful error message if user fails to create an ESP (awilliam)
+- Tell lvcreate not to ask us any questions and do its job. (#1057066)
+  (dlehman)
+
 * Fri Jan 24 2014 Brian C. Lane <bcl@redhat.com> - 0.38-1
 - Some simple tests for _verifyLUKSDevicesHaveKey (#1023442) (amulhern)
 - Verify that LUKS devices have some encryption key (#1023442) (amulhern)
