@@ -1,12 +1,12 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 0.41
+Version: 0.42
 Release: 1%{?dist}
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
-Source0: http://git.fedorahosted.org/cgit/blivet.git/snapshot/%{realname}-%{version}.tar.gz
+Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -62,6 +62,17 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
+* Tue Feb 18 2014 Brian C. Lane <bcl@redhat.com> - 0.42-1
+- Wait for udev to create device node for new md arrays. (#1036014) (dlehman)
+- Fix detection of thin pool with non-standard segment types. (#1022810)
+  (dlehman)
+- NFSDevice does not accept the exists kwarg. (#1063413) (dlehman)
+- Don't run mpathconf for disk image installations. (#1066008) (dlehman)
+- If /etc/os-release exists, check it to identify an installed system.
+  (clumens)
+- Get the unit tests into a runnable state. (dlehman)
+- Update Source URL in spec file to use github. (dlehman)
+
 * Tue Feb 11 2014 Brian C. Lane <bcl@redhat.com> - 0.41-1
 - ntfs _getSize needs to use Decimal (#1063077) (bcl)
 - Separate sanityCheck-ing from doAutoPartition (#1060255) (amulhern)
