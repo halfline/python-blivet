@@ -2,7 +2,7 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 0.54
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
@@ -62,6 +62,9 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.54-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Wed May 28 2014 Brian C. Lane <bcl@redhat.com> - 0.54-1
 - Add tests for setting device's parent list directly (vpodzime)
 - Do not alter the ParentList being iterated over (#1083581) (vpodzime)
