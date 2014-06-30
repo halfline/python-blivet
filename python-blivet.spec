@@ -2,7 +2,7 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 0.59
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
@@ -22,7 +22,7 @@ Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 
 BuildArch: noarch
 BuildRequires: gettext
-BuildRequires: python-setuptools-devel
+BuildRequires: python-setuptools
 
 Requires: python
 Requires: pykickstart >= %{pykickstartver}
@@ -62,6 +62,9 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
+* Mon Jun 30 2014 Toshio Kuratomi <toshio@fedoraproject.org> - 0.59-2
+- Replace python-setuptools-devel BR with python-setuptools
+
 * Thu Jun 26 2014 Brian C. Lane <bcl@redhat.com> - 0.59-1
 - When logging, indicate whether exception was ignored by blivet. (amulhern)
 
