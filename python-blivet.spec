@@ -1,8 +1,8 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 0.59
-Release: 2%{?dist}
+Version: 0.60
+Release: 1%{?dist}
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
@@ -62,8 +62,11 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
-* Mon Jun 30 2014 Toshio Kuratomi <toshio@fedoraproject.org> - 0.59-2
-- Replace python-setuptools-devel BR with python-setuptools
+* Wed Jul 02 2014 Brian C. Lane <bcl@redhat.com> - 0.60-1
+- Do not use udev info to get the name of the device. (amulhern)
+- Remove unnecessary fanciness about importing devices. (amulhern)
+- Disable some pylint warnings that arise due to anaconda versions. (amulhern)
+- Allow RAID1 on EFI (#788313) (amulhern)
 
 * Thu Jun 26 2014 Brian C. Lane <bcl@redhat.com> - 0.59-1
 - When logging, indicate whether exception was ignored by blivet. (amulhern)
