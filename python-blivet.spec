@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 1.4
+Version: 1.5
 Release: 1%{?dist}
 Epoch: 1
 License: LGPLv2+
@@ -15,10 +15,10 @@ Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 %define pykickstartver 1.99.22
 %define pocketlintver 0.4
 %define partedver 1.8.1
-%define pypartedver 3.10.3
+%define pypartedver 3.10.4
 %define e2fsver 1.41.0
 %define utillinuxver 2.15.1
-%define libblockdevver 0.10
+%define libblockdevver 1.0
 
 BuildArch: noarch
 BuildRequires: gettext
@@ -43,7 +43,7 @@ Requires: libselinux-python
 Requires: libblockdev >= %{libblockdevver}
 Requires: libblockdev-plugins-all >= %{libblockdevver}
 Requires: libselinux-python
-Requires: rpm-python
+Requires: python-hawkey
 
 %description
 The python-blivet package is a python module for examining and modifying
@@ -65,7 +65,7 @@ Requires: util-linux >= %{utillinuxver}
 Requires: dosfstools
 Requires: e2fsprogs >= %{e2fsver}
 Requires: lsof
-Requires: rpm-python3
+Requires: python3-hawkey
 
 %description -n python3-%{realname}
 The python3-%{realname} is a python3 package for examining and modifying storage
@@ -108,6 +108,23 @@ popd
 %endif
 
 %changelog
+* Thu May 28 2015 Brian C. Lane <bcl@redhat.com> - 1.5-1
+- Get rid of an unused import in blivet.zfcp (sbueno+anaconda)
+- Make appropriate changes to adapt for s390 libblockdev plugin.
+  (sbueno+anaconda)
+- Drop check from the release build target (bcl)
+- Merge pull request #127 from vpodzime/master-libblockdev_1.0 (vpodzime)
+- Adapt to the new libblockdev initialization API (vpodzime)
+- Merge pull request #111 from dwlehman/disk-model-branch (dlehman)
+- Store vendor/model information for DiskDevice instances. (dlehman)
+- Require new version of pyparted with Python 3 related fixes (vpodzime)
+- Merge pull request #114 from vojtechtrefny/fix_lvmsnapshot_size2 (vtrefny)
+- Merge pull request #118 from mulkieran/master-hawkey (mulkieran)
+- Use python-hawkey instead of rpm-python. (amulhern)
+- Add a dead simple test for some basic task and resource functionality.
+  (amulhern)
+- Use COW device to get actual size of LVM snapshots (vtrefny)
+
 * Mon May 18 2015 Brian C. Lane <bcl@redhat.com> - 1.4-1
 - Workaround for chrooted mountpoints  (#1217578) (vtrefny)
 - Merge pull request #116 from mulkieran/master-gerror (mulkieran)
