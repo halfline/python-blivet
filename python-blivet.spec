@@ -2,7 +2,7 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 1.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -108,6 +108,9 @@ popd
 %endif
 
 %changelog
+* Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Jun 10 2015 Brian C. Lane <bcl@redhat.com> - 1.6-1
 - Fix indentation in action_test.py (dlehman)
 - Merge pull request #133 from atodorov/fix_deprecation_warnings (mulkieran)
