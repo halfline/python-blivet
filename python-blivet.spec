@@ -2,13 +2,12 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 1.15
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
 Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
-%global with_python3 1
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -22,12 +21,9 @@ Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 
 BuildArch: noarch
 BuildRequires: gettext
-BuildRequires: python-setuptools
+BuildRequires: python2-devel python2-setuptools
 BuildRequires: python3-pocketlint >= %{pocketlintver}
-
-%if 0%{with_python3}
 BuildRequires: python3-devel python3-setuptools
-%endif
 
 Requires: python
 Requires: python-six
@@ -58,7 +54,6 @@ Summary: Data for the %{realname} python module.
 The %{realname}-data package provides data files required by the %{realname}
 python module.
 
-%if 0%{with_python3}
 %package -n python3-%{realname}
 Summary: A python3 package for examining and modifying storage configuration.
 Requires: python3
@@ -81,46 +76,42 @@ Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 %description -n python3-%{realname}
 The python3-%{realname} is a python3 package for examining and modifying storage
 configuration.
-%endif
 
 %prep
 %setup -q -n %{realname}-%{version}
 
-%if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-%endif
 
 %build
 make
 
 %install
 rm -rf %{buildroot}
-make DESTDIR=%{buildroot} install
+make PYTHON=%{__python2} DESTDIR=%{buildroot} install
 %find_lang %{realname}
 
-%if 0%{?with_python3}
 pushd %{py3dir}
 make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 popd
-%endif
 
 %files
 %defattr(-,root,root,-)
 %license COPYING
 %doc README ChangeLog examples
-%{python_sitelib}/*
+%{python2_sitelib}/*
 
 %files -n %{realname}-data -f %{realname}.lang
 
-%if 0%{?with_python3}
 %files -n python3-%{realname}
 %license COPYING
 %doc README ChangeLog examples
 %{python3_sitelib}/*
-%endif
 
 %changelog
+* Tue Oct 06 2015 Brian C. Lane <bcl@redhat.com> 1.15-2
+- Fixed specfile so it will actually build.
+
 * Fri Oct 02 2015 Brian C. Lane <bcl@redhat.com> - 1.15-1
 - Update Makefile to default to python3. (dlehman)
 - Add test for extended partition minSize (vtrefny)
