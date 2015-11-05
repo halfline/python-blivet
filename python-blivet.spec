@@ -2,7 +2,7 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 1.16
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -12,7 +12,6 @@ Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
 %define pykickstartver 1.99.22
-%define pocketlintver 0.4
 %define partedver 1.8.1
 %define pypartedver 3.10.4
 %define e2fsver 1.41.0
@@ -22,7 +21,6 @@ Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: gettext
 BuildRequires: python2-devel python2-setuptools
-BuildRequires: python3-pocketlint >= %{pocketlintver}
 BuildRequires: python3-devel python3-setuptools
 
 Requires: python
@@ -109,6 +107,10 @@ popd
 %{python3_sitelib}/*
 
 %changelog
+* Thu Nov 05 2015 Robert Kuska <rkuska@redhat.com> - 1:1.16-2
+- Rebuilt for Python3.5 rebuild
+- Remove requires for python3-pocketlint
+
 * Wed Oct 28 2015 Brian C. Lane <bcl@redhat.com> - 1.16-1
 - Merge pull request #257 from vpodzime/master-singleton_decorator (vpodzime)
 - Add pylint stuff to .gitignore (pjones)
