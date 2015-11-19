@@ -1,8 +1,8 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 1.16
-Release: 2%{?dist}
+Version: 1.17
+Release: 1%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -107,9 +107,16 @@ popd
 %{python3_sitelib}/*
 
 %changelog
-* Thu Nov 05 2015 Robert Kuska <rkuska@redhat.com> - 1:1.16-2
-- Rebuilt for Python3.5 rebuild
-- Remove requires for python3-pocketlint
+* Wed Nov 18 2015 Brian C. Lane <bcl@redhat.com> - 1.17-1
+- Do not catch CryptoError when decrypting LUKS format (#1280239) (vtrefny)
+- Do not try to get LVM cache's size from stats for inactive LV (vpodzime)
+- Ignore unused memo_dict arguments in __deepcopy__ methods. (clumens)
+- Do not create a copy of singleton objects (vpodzime)
+- Account for LVM metadata in the LVMFactory (vpodzime)
+- Rename size->space in LVMFactory._get_total_space (vpodzime)
+- Put the LVM metadata size calculation into a separate property (vpodzime)
+- Merge pull request #267 from atodorov/fix_1252703 (vpodzime)
+- Update dmdev size when setting up disk images (atodorov)
 
 * Wed Oct 28 2015 Brian C. Lane <bcl@redhat.com> - 1.16-1
 - Merge pull request #257 from vpodzime/master-singleton_decorator (vpodzime)
