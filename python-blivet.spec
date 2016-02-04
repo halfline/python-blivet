@@ -2,7 +2,7 @@ Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
 Version: 1.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -107,6 +107,9 @@ popd
 %{python3_sitelib}/*
 
 %changelog
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.18-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Fri Jan 08 2016 Brian C. Lane <bcl@redhat.com> - 1.18-1
 - Add more class methods for better use of metadata (jkonecny)
 - Remove pocketlint from BuildRequires (bcl)
