@@ -1,59 +1,34 @@
 Summary:  A python module for system storage configuration
-Name: python-blivet
+Name: python3-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 1.19
-Release: 1%{?dist}
+Version: 2.0.1
+
+#%%define prerelease .b1
+# prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
+Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %define realname blivet
-Source0: http://github.com/dwlehman/blivet/archive/%{realname}-%{version}.tar.gz
+%define realversion %{version}%{?prerelease}
+Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
 %define pykickstartver 1.99.22
+%define pocketlintver 0.4
 %define partedver 1.8.1
 %define pypartedver 3.10.4
 %define e2fsver 1.41.0
 %define utillinuxver 2.15.1
-%define libblockdevver 1.1
+%define libblockdevver 1.4
+%define libbytesizever 0.3
 
 BuildArch: noarch
 BuildRequires: gettext
-BuildRequires: python2-devel python2-setuptools
+BuildRequires: python3-pocketlint >= %{pocketlintver}
 BuildRequires: python3-devel python3-setuptools
 
-Requires: python
-Requires: python-six
-Requires: python-kickstart >= %{pykickstartver}
-Requires: util-linux >= %{utillinuxver}
-Requires: python-pyudev
-Requires: parted >= %{partedver}
-Requires: pyparted >= %{pypartedver}
-Requires: dosfstools
-Requires: e2fsprogs >= %{e2fsver}
-Requires: lsof
-Requires: libselinux-python
-Requires: python2-blockdev >= %{libblockdevver}
-Requires: libblockdev-plugins-all >= %{libblockdevver}
-Requires: libselinux-python
-Requires: python-hawkey
-Requires: pygobject3-base
-Requires: %{realname}-data = %{epoch}:%{version}-%{release}
-
-%description
-The python-blivet package is a python module for examining and modifying
-storage configuration.
-
-%package -n %{realname}-data
-Summary: Data for the %{realname} python module.
-
-%description -n %{realname}-data
-The %{realname}-data package provides data files required by the %{realname}
-python module.
-
-%package -n python3-%{realname}
-Summary: A python3 package for examining and modifying storage configuration.
 Requires: python3
 Requires: python3-six
 Requires: python3-kickstart
@@ -63,6 +38,7 @@ Requires: python3-pyparted >= %{pypartedver}
 Requires: libselinux-python3
 Requires: python3-blockdev >= %{libblockdevver}
 Requires: libblockdev-plugins-all >= %{libblockdevver}
+Requires: python3-bytesize >= %{libbytesizever}
 Requires: util-linux >= %{utillinuxver}
 Requires: dosfstools
 Requires: e2fsprogs >= %{e2fsver}
@@ -71,12 +47,19 @@ Requires: python3-hawkey
 Requires: python3-gobject-base
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
-%description -n python3-%{realname}
-The python3-%{realname} is a python3 package for examining and modifying storage
-configuration.
+%description
+The python3-blivet package is a python module for examining and modifying
+storage configuration.
+
+%package -n %{realname}-data
+Summary: Data for the %{realname} python module.
+
+%description -n %{realname}-data
+The %{realname}-data package provides data files required by the %{realname}
+python module.
 
 %prep
-%setup -q -n %{realname}-%{version}
+%setup -q -n %{realname}-%{realversion}
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -86,18 +69,8 @@ make
 
 %install
 rm -rf %{buildroot}
-make PYTHON=%{__python2} DESTDIR=%{buildroot} install
-%find_lang %{realname}
-
-pushd %{py3dir}
 make PYTHON=%{__python3} DESTDIR=%{buildroot} install
-popd
-
-%files
-%defattr(-,root,root,-)
-%license COPYING
-%doc README ChangeLog examples
-%{python2_sitelib}/*
+%find_lang %{realname}
 
 %files -n %{realname}-data -f %{realname}.lang
 
@@ -107,30 +80,245 @@ popd
 %{python3_sitelib}/*
 
 %changelog
-* Fri Feb 19 2016 Brian C. Lane <bcl@redhat.com> - 1.19-1
-- Ignore _setFormat no-member pylint error on LVMSnapShotBase (bcl)
+* Tue Mar 29 2016 David Lehman <dlehman@redhat.com> - 2.0.1-1
+- Make sure EddMatcher.root is a string. (dlehman)
+- Move per-thread change accounting to a function. (dlehman)
+- Add missing conf kwarg in call to PopulatorMixin ctor. (dlehman)
+- Fixes found while porting anaconda to blivet-2.0 (dlehman)
+- Mock all blockdev's listing functions for populator tests (vpodzime)
+
+* Wed Mar 09 2016 David Lehman <dlehman@redhat.com> - 2.0.0-1
+- Bump version to 2.0.0
+
+* Wed Mar 09 2016 David Lehman <dlehman@redhat.com> - 2.0.0-0.1.b1
+- Make sure we use the Size class properly (vpodzime)
+- Don't store size as int in SameSizeSet (vpodzime)
+- Use libbytesize's Size class as a base for our Size class (vpodzime)
+- Remove the second section about LUKS resize from release notes (vpodzime)
+- Streamline the TOC to only include top-level sections. (dlehman)
+- Adjust section hierarchy in intro doc. (dlehman)
+- Move testing docs into a file of their own. (dlehman)
+- Add an api specification to the docs. (dlehman)
+- Add luks resize and API stability efforts to release notes. (dlehman)
+- Clean up some of the singleton usage. (dlehman)
+- Drop sphinx mocking. (dlehman)
+- Reset container_uuid when removing PV from a VG (vtrefny)
+- Remove "destroy_format" method from docs (vtrefny)
+- Fix AttributeError in pv_free_info (vtrefny)
+
+* Wed Feb 24 2016 David Lehman <dlehman@redhat.com> - 2.0.0-0.1.a1
+- Update zanata config for 2.0 branches. (dlehman)
+- Remove cleanup of rc-release relics from ci target. (dlehman)
+- Don't run rc-release as part of ci for now. (dlehman)
+- Regenerate blivet.pot. (dlehman)
+- Specify encoding of pvtask.py to placate gettext. (dlehman)
+- Silence pylint complaint about passed callable. (dlehman)
+- Tear down devices on disk images before tearing down the images. (dlehman)
+- Update check for thin pool to work with new lv classes. (dlehman)
+- Use Blivet.do_it instead of calling ActionList.process in factory example. (dlehman)
+- Get rid of examples.common. (dlehman)
+- Allow for pre-release builds. (dlehman)
+- Fix load_module call in translation-canary. (dlehman)
+- Remove a couple of stray python2 invocations. (dlehman)
+- Do not call pvmove when removing an empty PV from VG. (vtrefny)
+- Add task for finding LVMPhysicalVolume format size (vtrefny)
+- Fix TypeError/AttributeError when adding thinpools and snapshots (vtrefny)
+- Fix current_size name in StorageDevice.update_size (vtrefny)
+- Ignore PEP8 errors E402 and E731 (vtrefny)
+- Make sure all checks run on 'make check' (vtrefny)
+- PEP8 fixes (vtrefny)
+- Add LUKS resize to release notes (vtrefny)
+- Add test for LUKS format resize (vtrefny)
+- Add a task for finding the size of a LUKS device (vtrefny)
+- Use DeviceFormatError and FormatResizeError in DeviceFormat (vtrefny)
+- Add LUKS resize support to resize_device method (vtrefny)
+- Define min_size for encrypted devices (vtrefny)
+- Do not teardown partition when resizing encrypted partition (vtrefny)
+- Make partitions with children resizable (vtrefny)
+- Make LUKS format resizable (vtrefny)
+- Make LUKSDevice resizable (vtrefny)
+- Make lukstasks and dfresize task pep8 compliant (vtrefny)
+- Add a LUKS resize task. (amulhern)
+- Make a top level device format resizing task class. (amulhern)
+- Move resize related methods from FS to DeviceFormat (vtrefny)
+- Disable spurious import-error from pylint. (dlehman)
+- Add blivet.events package to setup.py. (dlehman)
+- Remove unused util import from prepboot.py. (dlehman)
+- Remove deprecated methods and properties. (dlehman)
+- Flesh out the release notes. (dlehman)
 - Include python3-bugzilla when running tests (bcl)
 - Cleanup wildcard import in misc_test.py (bcl)
-- Make sure filter is a list in makebumpver (bcl)
-- Don't warn on unused-argument in __div__ (bcl)
-- Ignore pylint false positive assertRaisesRegex deprecation (bcl)
-- Change log.warn to log.warning (bcl)
-- Remove references to the interruptible-system-call check (dshea)
+- Add an example of event monitoring. (dlehman)
+- Mask uevents when updating parted.Disk. (dlehman)
+- Handle first-time open of luks devices. (dlehman)
+- Add a device populator for opened/decrypted LUKS devices. (dlehman)
+- Update sysfs path before updating size in StorageDevice ctor. (dlehman)
+- Validate event handling callbacks. (dlehman)
+- Hook up the event notify callback. (dlehman)
+- Account for changes made in response to each event. (dlehman)
+- Add facilities for reporting exceptions that occur in threads. (dlehman)
+- Add event handlers via a DeviceTree mixin class. (dlehman)
+- Add PopulatorHelper method to update device/formats. (dlehman)
+- Add classes for managing external events. (dlehman)
+- Add methods to wrap helper getters. (dlehman)
+- Only settle udev queue in get_devices when not handling events. (dlehman)
+- Allow passing a device to any PopulatorHelper constructor. (dlehman)
+- Implement DiskLabelFormatPopulator._get_kwargs. (dlehman)
+- Add a property indicating the type to pass to get_format. (dlehman)
+- Add functions for resolving between block major and device type. (dlehman)
+- Plumb modparent through DeviceTree.recursive_remove. (dlehman)
+- Add a flag to preserve the root device in recursive_remove. (dlehman)
+- Add container_uuid r/w property to container member format classes. (dlehman)
+- Set VG format as existing as part of VG creation. (dlehman)
+- Remove old hack meant to remove stale metadata. (dlehman)
+- Store disklabel and partition UUIDs when available. (dlehman)
+- Add a method to re-read the disklabel from disk. (dlehman)
+- Use wipefs to remove disklabels. (dlehman)
+- Add support for passing the new size into StorageDevice.updateSize. (dlehman)
+- Add a method to cancel all actions related to a specified disk. (dlehman)
+- Add a flag to ActionList to indicate in-progresss action processing. (dlehman)
+- Avoid failure to generate unit test API docs. (dlehman)
+- Add a console logger and a function to activate it. (dlehman)
+- Make LoopDevice size consistent with other device types. (dlehman)
+- Don't try to use a name bound via 'as' outside the try/except block. (dlehman)
+- Remove code for notifying the kernel of changes to block devices. (dlehman)
+- Add dependency checks for iSCSI operations (vpodzime)
+- Add decorator for guarding methods with external dependency checks (vpodzime)
+- Add a function for testing if some DBus object is available (vpodzime)
+- Use namedtuple for target info and tiny class for login infos (vpodzime)
+- Use the storaged's iSCSI DBus API instead of libiscsi (vpodzime)
+- Use the )
+- Add a module for doing DBus operations in the safest possible way (vpodzime)
+- Do not retry interruptible system calls. (dshea)
+- Document the LV class unification changes in the release notes (vpodzime)
+- Adapt our tests to the changes in representation of LVs (vpodzime)
+- Adapt our code to changes in the representation of LVs (vpodzime)
+- Rewrite the code for representing LVs (vpodzime)
+- Add a test for the to-be-used )
+- Add a decorator for guarding methods and properties with a property (vpodzime)
+- Transform the is_name_valid() into an instance method (vpodzime)
 - Add tests for FS overhead methods (jkonecny)
-
-* Fri Jan 08 2016 Brian C. Lane <bcl@redhat.com> - 1.18-1
 - Add more class methods for better use of metadata (jkonecny)
-- Remove pocketlint from BuildRequires (bcl)
-
-* Wed Nov 18 2015 Brian C. Lane <bcl@redhat.com> - 1.17-1
+- Remove python2 assert regex method name hacks. (dlehman)
+- Fix various pylint errors introduced with python-3.5. (dlehman)
+- Add a file with release notes (vpodzime)
+- Blacklisted attrs should be unwrapped, not omitted. (dlehman)
+- Return the device when returning early from degraded md handler. (dlehman)
+- Fix application of synchronization metaclass to DeviceTree. (dlehman)
+- Fix AttributeError in populator LUKS helper (vtrefny)
+- Update spec file for blivet 2.0 builds (vtrefny)
+- Add populator.helpers to package (vtrefny)
+- Add translator comments to the byte size prefixes. (dshea)
+- Integrate translation-canary with blivet. (dshea)
+- Update blivet.pot during scratch-bumpver. (dshea)
+- Always use setup.py sdist to generate source tarballs. (dshea)
+- Squashed 'translation-canary/' content from commit 5a45c19 (dshea)
+- Update class and methods in "Introduction to Blivet" (vtrefny)
+- Build documentation with python3 sphinx (vtrefny)
+- Fix PEP8 violations introduced in the LVM RAID commits (vpodzime)
+- Make the main class hierarchies thread-safe. (dlehman)
+- Add unit tests for changes related to non-linear LVs (vpodzime)
+- Make sure we try to match LVM RAID levels with all their names (vpodzime)
+- Don't bother user code with LVM RAID meta data (vpodzime)
+- Inherit the RaidDevice mixin in the LVMLogicalVolumeDevice class (vpodzime)
+- Account for a pmspare LV creation or growth when determining the cache size (vpodzime)
+- Refresh the PV free space info after LV creation (vpodzime)
+- Add an early check of the requested LV segment type (vpodzime)
+- Add example of LVM cache creation (vpodzime)
+- Make sure the slow_pvs+fast_pvs list we pass to libblockdev has no dups (vpodzime)
+- Use pv.path instead of constructing it from name and "/dev/" (vpodzime)
+- Account for LVM cache space in PVs (vpodzime)
+- Fix the twisted logic of lv.metadata_size (vpodzime)
+- Replace the 'copies' property of LVs with something more accurate (vpodzime)
+- Track information about free space in existing PVs (vpodzime)
+- Add guards making sure we are not being tricked with LV seg_type (vpodzime)
+- Define and use a new is_raid_lv property of LVMLogicalVolumeDevice (vpodzime)
+- Add an example of non-linear LV creation (vpodzime)
+- Create non-linear LVs before linear LVs (vpodzime)
+- Account for LVM RAID metadata (vpodzime)
+- Define RAID level for LV and use it to determine required PV space (vpodzime)
+- Add a definition for the striped "RAID level" (vpodzime)
+- Track information about free space in a PV (vpodzime)
+- Honor the LV segment type when creating it (vpodzime)
+- Let LVMLogicalVolumeDevice specify PVs it should be allocated from (vpodzime)
+- Define the Device.parent property with the )
+- Adjust to Device now having a list of child devices. (dlehman)
+- Maintain a list of child devices in Device. (dlehman)
+- Add unit tests to explicitly cover container member set changes. (dlehman)
+- Remove ParentList.replace and its usage. (dlehman)
+- Improve logging of failure to validate new default fstype. (dlehman)
+- Remove unused populated attribute from Populator. (dlehman)
+- Stop passing around the iscsi singleton. (dlehman)
+- Make the iscsi singleton satisfactory to pylint. (dlehman)
+- Remove the various DASD lists from Blivet and DeviceTree. (dlehman)
+- Convert Populator to a mixin class. (dlehman)
+- Move disk filter bits from Populator into DeviceTree. (dlehman)
+- Move the LVM data cache from DeviceTree to Populator. (dlehman)
+- Rename per-device Populator entry points. (dlehman)
+- Make Populator.udev_device_is_disk a private method. (dlehman)
+- Stop writing an mdadm.conf. (dlehman)
+- Group disk-image-related methods together in source code. (dlehman)
+- Move some code from _populate into separate methods. (dlehman)
+- Split various parts of add_udev_device into separate methods. (dlehman)
+- Remove some extraneous methods related to ignored devices. (dlehman)
+- Only handle loop devices with a backing file. (dlehman)
+- Add unit tests for populator helpers. (dlehman)
+- Use helper getter functions to find populator helpers. (dlehman)
+- Add functions to return a helper class based on device data. (dlehman)
+- Move format-type-specific bits into populator helpers. (dlehman)
+- Split DiskDevicePopulator up by disk type. (dlehman)
+- Move device-type-specific populator bits to populator helpers. (dlehman)
+- Add base classes for type-specific Populator helpers. (dlehman)
+- Use the mpath_member ID_FS_TYPE set up by the multipath udev rules. (dlehman)
+- Make blivet.populator into a subpackage. (dlehman)
+- Convert device_get_dm_partition_disk to not be dm-specific. (dlehman)
+- Use DeviceTree.__str__ when printing devices in examples. (dlehman)
+- Disk image test can only be run as root. (dlehman)
+- Fix few more camelCase leftovers (vpodzime)
+- Fix various PEP8 violations in recent EDD commits. (dlehman)
+- Add PEP8 compliance checking to 'check' target. (dlehman)
+- Teardown all devices before tearing disk images down (vpodzime)
+- Change doc Introduction to reflect PEP8 compliance changes (vtrefny)
+- Few PEP8 compliance related fixes (vtrefny)
+- Pass devices arg when calling actions.process (vtrefny)
 - Do not catch CryptoError when decrypting LUKS format (#1280239) (vtrefny)
-- Do not try to get LVM cache's size from stats for inactive LV (vpodzime)
+- Fix makebumpver for new conf.py (bcl)
+- Bump version numbers to 2.0 before we forget. (bcl)
+- Only prepend the root to get the ondisk path if there is some (vpodzime)
 - Ignore unused memo_dict arguments in __deepcopy__ methods. (clumens)
+- Update the getattr calls with PEP8 property/attribute names (vpodzime)
 - Do not create a copy of singleton objects (vpodzime)
+- Fix pylint problems with the new default namedtuple stuff. (clumens)
+- Do not try to get LVM cache's size from stats for inactive LV (vpodzime)
+- edd: Add mostly fixed virt data (pjones)
+- edd: Add another terrible seabios dataset (pjones)
+- edd: Add test data from a Strawberry Mountain machine w/ lots of SATA. (pjones)
+- edd: Fix the error case in the "absurd_virt" test. (pjones)
+- edd: Add absurd_virt tests back in (pjones)
+- edd: Try to detect multiple ATA/SATA matches and log them. (pjones)
+- edd: Split up VirtIO and VirtIO SCSI matching (pjones)
+- edd: Log every glob.glob() match in our test data log. (pjones)
+- edd: Eradicate fsroot entirely. (pjones)
+- edd: add EddEntry.bios_device_number (pjones)
+- edd: Make our own assertVerboseListEqual to get rid of truncated output. (pjones)
+- edd: Add sysfslink for mbr matches (pjones)
+- Make get_sysfs_attr() use our path joiners and add sysfs_readlink() (pjones)
+- Make a "Path" object that handles separate fs root for us. (pjones)
+- edd: Minor PEP8 fix (pjones)
+- Add a much much simpler path normalizer and joiner. (pjones)
+- Improve clarity of error when setting new default fstype fails. (dlehman)
+- Fix missed rebase of populator test from 169dc6b6. (dlehman)
+- Add a class constructor for namedtuples with default values (vpodzime)
+- Use lvm.round_size_to_pe() instead of get_lv_physical_size() with the VG size (vpodzime)
 - Account for LVM metadata in the LVMFactory (vpodzime)
-- Rename size->space in LVMFactory._get_total_space (vpodzime)
 - Put the LVM metadata size calculation into a separate property (vpodzime)
-- Merge pull request #267 from atodorov/fix_1252703 (vpodzime)
+- Rename size->space in LVMFactory._get_total_space (vpodzime)
+- Remove action-oriented wrapper methods from DeviceTree. (dlehman)
+- Put DeviceTree methods into a sensible order. (dlehman)
+- Fix remaining PEP8 violations. (dlehman)
+- Fix PEP8 indentation issues. (dlehman)
+- Fix the easy PEP8 violations. (dlehman)
+- Make all names conform to PEP8. (dlehman)
 - Update dmdev size when setting up disk images (atodorov)
 
 * Wed Oct 28 2015 Brian C. Lane <bcl@redhat.com> - 1.16-1
