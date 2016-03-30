@@ -5,7 +5,7 @@ Version: 2.0.1
 
 #%%define prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 2%{?prerelease}%{?dist}
+Release: 3%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -29,6 +29,19 @@ BuildRequires: gettext
 BuildRequires: python3-pocketlint >= %{pocketlintver}
 BuildRequires: python3-devel python3-setuptools
 
+%description
+The python-blivet package is a python module for examining and modifying
+storage configuration.
+
+%package -n %{realname}-data
+Summary: Data for the %{realname} python module.
+
+%description -n %{realname}-data
+The %{realname}-data package provides data files required by the %{realname}
+python module.
+
+%package -n python3-%{realname}
+Summary: A python3 package for examining and modifying storage configuration.
 Requires: python3
 Requires: python3-six
 Requires: python3-kickstart
@@ -47,19 +60,6 @@ Requires: python3-hawkey
 Requires: python3-gobject-base
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
-%description
-The python-blivet package is a python module for examining and modifying
-storage configuration.
-
-%package -n %{realname}-data
-Summary: Data for the %{realname} python module.
-
-%description -n %{realname}-data
-The %{realname}-data package provides data files required by the %{realname}
-python module.
-
-%package -n python3-%{realname}
-Summary: A python3 package for examining and modifying storage configuration.
 %description -n python3-%{realname}
 The python3-%{realname} is a python3 package for examining and modifying storage
 configuration.
@@ -86,6 +86,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Tue Mar 29 2016 David Lehman <dlehman@redhat.com> - 2.0.1-3
+- Fix requires after shuffling subpackages.
+
 * Tue Mar 29 2016 David Lehman <dlehman@redhat.com> - 2.0.1-2
 - Fix package naming in specfile.
 
