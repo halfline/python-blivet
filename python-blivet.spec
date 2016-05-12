@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.0.2
+Version: 2.0.3
 
 #%%define prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
@@ -33,13 +33,6 @@ BuildRequires: python3-devel python3-setuptools
 The python-blivet package is a python module for examining and modifying
 storage configuration.
 
-%package -n %{realname}-data
-Summary: Data for the %{realname} python module.
-
-%description -n %{realname}-data
-The %{realname}-data package provides data files required by the %{realname}
-python module.
-
 %package -n python3-%{realname}
 Summary: A python3 package for examining and modifying storage configuration.
 Requires: python3
@@ -58,7 +51,8 @@ Requires: e2fsprogs >= %{e2fsver}
 Requires: lsof
 Requires: python3-hawkey
 Requires: python3-gobject-base
-Requires: %{realname}-data = %{epoch}:%{version}-%{release}
+Obsoletes: blivet-data < 1:2.0.3
+Obsoletes: python-blivet < 1:2.0.3
 
 %description -n python3-%{realname}
 The python3-%{realname} is a python3 package for examining and modifying storage
@@ -78,14 +72,41 @@ rm -rf %{buildroot}
 make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %find_lang %{realname}
 
-%files -n %{realname}-data -f %{realname}.lang
-
-%files -n python3-%{realname}
+%files -n python3-%{realname} -f %{realname}.lang
 %license COPYING
 %doc README ChangeLog examples
 %{python3_sitelib}/*
 
 %changelog
+* Thu May 12 2016 David Lehman <dlehman@redhat.com> - 2.0.3-1
+- Fix protected status for extended partitions (vtrefny)
+- Improve documentation of the udev.resolve_glob() function (vpodzime)
+- Remove the locale list from zanata.xml (dshea)
+- Do not test translated strings during make ci. (dshea)
+- Squashed 'translation-canary/' changes from 5a45c19..3bc2ad6 (dshea)
+- Fix root detection on btrfs in rescue mode (vtrefny)
+- Use device's mount options when mounting existing systems (vtrefny)
+- Ignore pylint being confused with our mixins' properties (vpodzime)
+- Get back to use ROUND_HALF_UP by default (vpodzime)
+- Let Python import the formats for us (vpodzime)
+- Only call resolve_devspec() in _get_active_mounts() for real devices
+  (vpodzime)
+- Call is_mpath_member() only when it makes sense (dlehman)
+- Break the cycle in LVMPhysicalVolume.destroy (#1331630) (vpodzime)
+- Use libbytesize's translations for Size tests (vpodzime)
+- Compare sizes instead of numbers of sectors (vpodzime)
+- Obsolete python-blivet and blivet-data packages. (dlehman)
+- Increase the default size of /boot to 1 GB. (#377) (clumens)
+- Do not add btrfs volume subvolid to subvolumes mountopts (#1306808) (vtrefny)
+- A simple script for multi-merges we now do (vpodzime)
+- Update CONTRIBUTING file to match current practices. (dlehman)
+- Only import the 'iscsi' singleton when really needed (vpodzime)
+- Correctly recognize internal RAID LVs (vpodzime)
+- Do not add mdarray with no slave (#1321393) (vtrefny)
+- Make sure to add hyperPAV aliases to dasd.conf. (sbueno+anaconda)
+- LVM data are now global (japokorn)
+- Preserve traceback when re-raising exceptions (vpodzime)
+
 * Mon Apr 04 2016 David Lehman <dlehman@redhat.com> - 2.0.2-1
 - Fix mistake from PEP8 conversion. (#1323012) (dlehman)
 - Set both req_size and size of thin pool when growing LVM (vpodzime)
