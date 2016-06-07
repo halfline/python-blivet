@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.1.0
+Version: 2.1.1
 
 #%%define prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
@@ -23,6 +23,7 @@ Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}
 %define utillinuxver 2.15.1
 %define libblockdevver 1.4
 %define libbytesizever 0.3
+%define pyudevver 0.18
 
 BuildArch: noarch
 BuildRequires: gettext
@@ -38,7 +39,7 @@ Summary: A python3 package for examining and modifying storage configuration.
 Requires: python3
 Requires: python3-six
 Requires: python3-kickstart
-Requires: python3-pyudev
+Requires: python3-pyudev >= %{pyudevver}
 Requires: parted >= %{partedver}
 Requires: python3-pyparted >= %{pypartedver}
 Requires: libselinux-python3
@@ -78,6 +79,25 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Tue Jun 07 2016 David Lehman <dlehman@redhat.com> - 2.1.1-1
+- Ignore all merge commits when making rpm log. (dlehman)
+- Require pyudev 0.18 or newer (vtrefny)
+- Do not use deprecated pyudev methods (vtrefny)
+- Try harder to identify a partition's disk when necessary. (dlehman)
+- Add some fallback methods for finding a partition's disk. (dlehman)
+- Include devices on disklabels unsupported by parted in the devicetree.
+  (dlehman)
+- Don't traceback if we fail to examine an md member. (dlehman)
+- Disklabel commit errors can occur for disks, too. (dlehman)
+- Add unit tests for device methods. (dlehman)
+- ARM platforms: support both msdos and gpt partitions (pbrobinson)
+- LUKS data moved to singleton (japokorn)
+- Add the P_ keyword to xgettext. (dshea)
+- Add xfs to default filesystem types (rmarshall)
+- Fix blivet constructor fs support check (rmarshall)
+- Do not put LVM stuff into syslog (vpodzime)
+- Kickstart missing bootloader partitions (#1242666) (rmarshall)
+
 * Thu May 12 2016 David Lehman <dlehman@redhat.com> - 2.1.0-1
 - Add name of problematic device to UnusableConfigurationError (vtrefny)
 - LVM data are now global (japokorn)
