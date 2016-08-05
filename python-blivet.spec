@@ -1,11 +1,11 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.1.1
+Version: 2.1.2
 
 #%%define prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 2%{?prerelease}%{?dist}
+Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -21,7 +21,7 @@ Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}
 %define pypartedver 3.10.4
 %define e2fsver 1.41.0
 %define utillinuxver 2.15.1
-%define libblockdevver 1.4
+%define libblockdevver 1.9
 %define libbytesizever 0.3
 %define pyudevver 0.18
 
@@ -79,13 +79,48 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
-* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:2.1.1-2
-- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
-
-* Tue Jun 07 2016 David Lehman <dlehman@redhat.com> - 2.1.1-1
-- Ignore all merge commits when making rpm log. (dlehman)
+* Fri Aug 05 2016 David Lehman <dlehman@redhat.com> - 2.1.2-1
+- Update release notes to include previous two releases. (dlehman)
+- Allign the LV's size up to set the base size for growing (vpodzime)
+- Ensure biosboot shows up in kickstart (#1242666) (rmarshall)
+- Add tests for the new LV from LVs actions (vpodzime)
+- Make sure to add/remove internal LVs when adding/removing a compound LV
+  (vpodzime)
+- Make sure all LVs to create a new LV from are in the DT (vpodzime)
+- Make sure internal LVs are added/removed to/from DT properly (vpodzime)
+- Make LVs depend on their internal LVs (vpodzime)
+- Do not add the LV to devicetree in new_lv_from_lvs() (vpodzime)
+- Require libblockdev version with all the functions we need (vpodzime)
+- Allow for cascade creation of LVs from LVs (vpodzime)
+- Fix removing PVs after removing VG (#1358067) (vtrefny)
+- Pass arguments to get_member_raid_sets() in the correct order (#1225184)
+  (vpodzime)
+- Use the new way extra information is provided for LVs (vpodzime)
+- Add a method to determine if a udev device is a disk. (vtrefny)
+- Fix udev.resolve_glob to match device path too (vtrefny)
+- Adapt to the old-new storaged API paths (vpodzime)
+- Handle an mpath name as lone exclusive disk. (#984059) (dlehman)
+- Add unit tests for disk filter. (dlehman)
+- Allow creation of a new LV from other LVs (vpodzime)
+- Removed test for snapshot origin existance (jkonecny)
+- Don't require existing origin when modeling snapshot (jkonecny)
+- Update size for dmraid arrays found during populate. (#1269662) (dlehman)
+- Restore the correct default partition table type for AArch64 EFI. (dmarlin)
+- Fix args to cancel_disk_actions call from hide(). (dlehman)
+- Fix not enough free space after creating extended partition (#1252350)
+  (vtrefny)
+- Add some more unit tests for DeviceTree. (dlehman)
+- Add tests for critical format methods. (dlehman)
+- Split and include cache data and metadata sizes properly (vpodzime)
+- Use internal LVs (if any) to calculate space used by existing LVs (vpodzime)
+- Remove an unused calculation of VG's RAID PVs (vpodzime)
+- Only include padding to nonexisting thin pools' vg_space_used (vpodzime)
 - Require pyudev 0.18 or newer (vtrefny)
 - Do not use deprecated pyudev methods (vtrefny)
+- Show changes for each branch in git-multi-merge before pushing (vpodzime)
+
+* Mon Jun 06 2016 David Lehman <dlehman@redhat.com> - 2.1.1-1
+- Ignore all merge commits when making rpm log. (dlehman)
 - Try harder to identify a partition's disk when necessary. (dlehman)
 - Add some fallback methods for finding a partition's disk. (dlehman)
 - Include devices on disklabels unsupported by parted in the devicetree.
