@@ -1,29 +1,29 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.1.2
+Version: 2.1.3
 
-#%%define prerelease .b1
+#%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
 Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
-%define realname blivet
-%define realversion %{version}%{?prerelease}
+%global realname blivet
+%global realversion %{version}%{?prerelease}
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
-%define pykickstartver 1.99.22
-%define pocketlintver 0.4
-%define partedver 1.8.1
-%define pypartedver 3.10.4
-%define e2fsver 1.41.0
-%define utillinuxver 2.15.1
-%define libblockdevver 1.9
-%define libbytesizever 0.3
-%define pyudevver 0.18
+%global pykickstartver 1.99.22
+%global pocketlintver 0.4
+%global partedver 1.8.1
+%global pypartedver 3.10.4
+%global e2fsver 1.41.0
+%global utillinuxver 2.15.1
+%global libblockdevver 1.9
+%global libbytesizever 0.3
+%global pyudevver 0.18
 
 BuildArch: noarch
 BuildRequires: gettext
@@ -69,7 +69,6 @@ cp -a . %{py3dir}
 make
 
 %install
-rm -rf %{buildroot}
 make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %find_lang %{realname}
 
@@ -79,6 +78,19 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Wed Sep 14 2016 David Lehman <dlehman@redhat.com> - 2.1.3-1
+- Remove some deprecated/obsolete bits from spec file. (dlehman)
+- Use %%global instead of %%define for specfile macros. (dlehman)
+- Fix URLs pointing to blivet resources. (dlehman)
+- UUID is now cleaned when destroying format (japokorn)
+- Support disk tags as disk specification for new partitions. (dlehman)
+- Add tags property to Device with some defaults for disk variants. (dlehman)
+- Add checks to git-multi-merge script (jkonecny)
+- UUID now set correctly when reformatting partition (japokorn)
+- Eliminate mountpoint symlinks when looking for mounted device (vtrefny)
+- iscsi: allow installing bootloader on offload iscsi disks (qla4xxx)
+  (#1325134) (rvykydal)
+
 * Fri Aug 05 2016 David Lehman <dlehman@redhat.com> - 2.1.2-1
 - Update release notes to include previous two releases. (dlehman)
 - Allign the LV's size up to set the base size for growing (vpodzime)
