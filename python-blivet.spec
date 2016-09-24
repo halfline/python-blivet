@@ -5,7 +5,7 @@ Version: 2.1.4
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 1%{?prerelease}%{?dist}
+Release: 2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -78,6 +78,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Sat Sep 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.1.4-2
+- Bump to sync with anaconda release
+
 * Tue Sep 20 2016 David Lehman <dlehman@redhat.com> - 2.1.4-1
 - Revert unsupported clearing of parted partition 'system'. (dlehman)
 - Make sure we create a proper GVariant tuple as args (#1375712) (vpodzime)
