@@ -1,11 +1,11 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.1.4
+Version: 2.1.5
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 2%{?prerelease}%{?dist}
+Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -78,8 +78,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
-* Sat Sep 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.1.4-2
-- Bump to sync with anaconda release
+* Mon Sep 26 2016 David Lehman <dlehman@redhat.com> - 2.1.5-1
+- Move parted changes to after format destroy. (#1378162) (dlehman)
+- Add translators comment for unsupported disklabel names (vtrefny)
 
 * Tue Sep 20 2016 David Lehman <dlehman@redhat.com> - 2.1.4-1
 - Revert unsupported clearing of parted partition 'system'. (dlehman)
