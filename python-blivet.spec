@@ -5,13 +5,15 @@ Version: 2.1.7
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 1%{?prerelease}%{?dist}
+Release: 2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
+
+Patch0: 0001-Fix-unknown-SAS-device-sysfs-parsing.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -61,6 +63,7 @@ configuration.
 
 %prep
 %setup -q -n %{realname}-%{realversion}
+%patch0 -p1
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -80,6 +83,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Mon Nov 21 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-2
+- Fix "unknown" SAS device sysfs parsing. (#1394026) (awilliam)
+
 * Mon Nov 21 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-1
 - Require BlockDev 2.0 in the gi.require_version() call (vpodzime)
 - Fix detection of 'macefi' partitions (#1393846) (awilliam)
