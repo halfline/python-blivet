@@ -5,7 +5,7 @@ Version: 2.1.7
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 2%{?prerelease}%{?dist}
+Release: 3%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -54,6 +54,7 @@ Requires: e2fsprogs >= %{e2fsver}
 Requires: lsof
 Requires: python3-hawkey
 Requires: python3-gobject-base
+Requires: systemd-udev
 Obsoletes: blivet-data < 1:2.0.3
 Obsoletes: python-blivet < 1:2.0.3
 
@@ -83,6 +84,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Tue Dec  6 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-3
+- Add 'systemd-udev' to dependencies (#1392591) (vtrefny)
+
 * Mon Nov 21 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-2
 - Fix "unknown" SAS device sysfs parsing. (#1394026) (awilliam)
 
