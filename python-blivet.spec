@@ -5,7 +5,7 @@ Version: 2.1.7
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 3%{?prerelease}%{?dist}
+Release: 4%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -84,6 +84,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1:2.1.7-4
+- Rebuild for Python 3.6
+
 * Tue Dec  6 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-3
 - Add 'systemd-udev' to dependencies (#1392591) (vtrefny)
 
