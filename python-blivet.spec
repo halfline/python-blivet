@@ -5,7 +5,7 @@ Version: 2.1.7
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 4%{?prerelease}%{?dist}
+Release: 5%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -14,6 +14,9 @@ Group: System Environment/Libraries
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
 
 Patch0: 0001-Fix-unknown-SAS-device-sysfs-parsing.patch
+# Fix crash with Python 3.6:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1408282
+Patch1: https://github.com/rhinstaller/blivet/pull/530.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -84,6 +87,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Fri Dec 23 2016 Adam Williamson <awilliam@redhat.com> - 1:2.1.7-5
+- backport GH#530 to fix #1408282 (crash with Python 3.6)
+
 * Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1:2.1.7-4
 - Rebuild for Python 3.6
 

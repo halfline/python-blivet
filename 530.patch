@@ -1,0 +1,30 @@
+From 67d36789c8ff88b4ba14da7022f63b6831d75da3 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Thu, 22 Dec 2016 15:09:47 -0800
+Subject: [PATCH] Shallow copy another alignment property (#1408282)
+
+Several blivet classes use custom __deepcopy__ methods to avoid
+deep copying some parted objects which we know can't be deep
+copied. Unfortunately the list of attributes excepted from deep
+copying for `DiskLabel` was missing one parted Alignment object,
+and with Python 3.6, we blow up trying to deepcopy that. This
+fixes the problem by adding that attribute to the list of ones
+we know have to be shallow copied.
+---
+ blivet/formats/disklabel.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/blivet/formats/disklabel.py b/blivet/formats/disklabel.py
+index f6b9d83..2dad706 100644
+--- a/blivet/formats/disklabel.py
++++ b/blivet/formats/disklabel.py
+@@ -90,7 +90,8 @@ def __deepcopy__(self, memo):
+             We can't do copy.deepcopy on parted objects, which is okay.
+         """
+         return util.variable_copy(self, memo,
+-                                  shallow=('_parted_device', '_optimal_alignment', '_minimal_alignment',),
++                                  shallow=('_parted_device', '_optimal_alignment', '_minimal_alignment',
++                                           '_disk_label_alignment'),
+                                   duplicate=('_parted_disk', '_orig_parted_disk'))
+ 
+     def __repr__(self):
