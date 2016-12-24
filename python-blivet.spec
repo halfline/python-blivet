@@ -5,7 +5,7 @@ Version: 2.1.7
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 5%{?prerelease}%{?dist}
+Release: 6%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -68,6 +68,7 @@ configuration.
 %prep
 %setup -q -n %{realname}-%{realversion}
 %patch0 -p1
+%patch1 -p1
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -87,6 +88,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Sat Dec 24 2016 Adam Williamson <awilliam@redhat.com> - 1:2.1.7-6
+- Actually apply the patch mentioned in -5
+
 * Fri Dec 23 2016 Adam Williamson <awilliam@redhat.com> - 1:2.1.7-5
 - backport GH#530 to fix #1408282 (crash with Python 3.6)
 
