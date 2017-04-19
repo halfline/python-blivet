@@ -1,22 +1,17 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 2.1.7
+Version: 2.1.8
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 7%{?prerelease}%{?dist}
+Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
-
-Patch0: 0001-Fix-unknown-SAS-device-sysfs-parsing.patch
-# Fix crash with Python 3.6:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1408282
-Patch1: https://github.com/rhinstaller/blivet/pull/530.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -26,7 +21,7 @@ Patch1: https://github.com/rhinstaller/blivet/pull/530.patch
 %global pypartedver 3.10.4
 %global e2fsver 1.41.0
 %global utillinuxver 2.15.1
-%global libblockdevver 2.1
+%global libblockdevver 2.6
 %global libbytesizever 0.3
 %global pyudevver 0.18
 
@@ -67,8 +62,6 @@ configuration.
 
 %prep
 %setup -q -n %{realname}-%{realversion}
-%patch0 -p1
-%patch1 -p1
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -88,6 +81,32 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Wed Apr 19 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.8-1
+- Fix "unknown" SAS device sysfs parsing. (adamw)
+- Reserve space in a VG when using LVMThinPFactory (vpodzime)
+- Reserve space in a VG instead of padding thin pools on autopart (vpodzime)
+- Focus the nonzero disk image size test a bit. (dlehman)
+- Add missing tearDown method to luks resize test case. (dlehman)
+- Fix some flag stomping in tests. (dlehman)
+- Remove the useless method requiredDiskLabelType (vponcova)
+- FBA DASD should use the msdos disk label type (vponcova)
+- Be more careful when checking for udisks-iscsi availability (vpodzime)
+- Do not allow resize of devices with no/unrecoginized formatting. (#1033778)
+  (dlehman)
+- Clean up parent/child relations on partition ctor error. (#1383873) (dlehman)
+- Use all ancestors when adding RAID disks to exclusiveDisks (vtrefny)
+- Fix detection of linear MD RAID (vtrefny)
+- Add 'discard' option to crypttab for newly created LUKS (vpodzime)
+- Loop devices w/o backing file are now ignored (japokorn)
+- Set parted boot flag when creating EFI filesystem (vtrefny)
+- formats/fs: Set NTFS to be formattable (aszlig)
+- Do not try to search for 'tmpfs' devices in udev database (vtrefny)
+- Fix resize test in fstesting (vtrefny)
+- Fix task availability test (vtrefny)
+- Shallow copy another alignment property (#1408282) (awilliam)
+- Fix the test dependencies (vpodzime)
+- Add 'systemd-udev' to dependencies (#1392591) (vtrefny)
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:2.1.7-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
@@ -109,20 +128,16 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 * Mon Nov 21 2016 Vratislav Podzimek <vpodzime@redhat.com> - 2.1.7-1
 - Require BlockDev 2.0 in the gi.require_version() call (vpodzime)
 - Fix detection of 'macefi' partitions (#1393846) (awilliam)
+- Add device symlinks to the PVs dictionary for MD RAID PVs (#1389130)
+  (vpodzime)
+- iSCSI: turn `iscsi.initiator_set` into a property (awilliam)
+- iSCSI: Store auth info in NodeInfo tuples (awilliam)
+- Use correct type for port in GVariant tuple (awilliam)
 - Use a list comprehension for _to_node_infos (awilliam)
 - Device name now checked only for new devices (japokorn)
 - Remove several redundant teardown calls. (dlehman)
 - Cache and reuse data about multipath members (vpodzime)
 - Remove some obsolete pvscan calls. (dlehman)
-
-* Mon Nov 07 2016 David Lehman <dlehman@redhat.com> - 2.1.6-3
-- Never update POT file as part of rpm build.
-
-* Mon Nov 07 2016 David Lehman <dlehman@redhat.com> - 2.1.6-2
-- Use correct type for port in GVariant tuple (awilliam)
-- iSCSI: Store auth info in NodeInfo tuples (awilliam)
-- iSCSI: turn `iscsi.initiator_set` into a property (awilliam)
-- Add device symlinks to the PVs dictionary for MD RAID PVs (#1389130) (vpodzime)
 
 * Tue Oct 04 2016 David Lehman <dlehman@redhat.com> - 2.1.6-1
 - add missing populators to populator.helpers (awilliam)
