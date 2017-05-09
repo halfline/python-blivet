@@ -1,0 +1,40 @@
+From 7ef50d3b7061353838e44c8dc202eb5f6b012f40 Mon Sep 17 00:00:00 2001
+From: Vratislav Podzimek <vpodzime@redhat.com>
+Date: Thu, 4 May 2017 13:03:06 +0200
+Subject: [PATCH] Look the disk up for a partition by name not sys_name
+
+udev.device_get_partition_disk() returns the device name as given
+by device_get_name() not sys_name. So when trying to find a match
+we need to compare it to the same value for devices we iterate
+over.
+
+Also don't call resolve_devspec() on the returned value,
+udev.device_get_partition_disk() is already doing it.
+
+Resolves: rhbz#1445302
+---
+ blivet/populator/helpers/partition.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/blivet/populator/helpers/partition.py b/blivet/populator/helpers/partition.py
+index 617b5e7..73b15f1 100644
+--- a/blivet/populator/helpers/partition.py
++++ b/blivet/populator/helpers/partition.py
+@@ -57,13 +57,13 @@ def run(self):
+                 return device
+ 
+         disk = None
+-        sys_name = udev.device_get_partition_disk(self.data)
+-        if sys_name:
+-            disk_name = udev.resolve_devspec(sys_name)
++        disk_name = udev.device_get_partition_disk(self.data)
++        if disk_name:
+             disk = self._devicetree.get_device_by_name(disk_name)
+             if disk is None:
+                 # create a device instance for the disk
+-                disk_info = next((i for i in udev.get_devices() if i.sys_name == sys_name), None)
++                disk_info = next((i for i in udev.get_devices()
++                                  if udev.device_get_name(i) == disk_name), None)
+                 if disk_info is not None:
+                     self._devicetree.handle_device(disk_info)
+                     disk = self._devicetree.get_device_by_name(disk_name)

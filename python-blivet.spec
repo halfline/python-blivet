@@ -5,13 +5,15 @@ Version: 2.1.8
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 1%{?prerelease}%{?dist}
+Release: 2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
+
+Patch0: rhbz1445302.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -62,6 +64,7 @@ configuration.
 
 %prep
 %setup -q -n %{realname}-%{realversion}
+%patch0 -p1
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
