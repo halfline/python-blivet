@@ -5,13 +5,14 @@ Version: 2.1.9
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 1%{?prerelease}%{?dist}
+Release: 2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/rhinstaller/blivet/archive/%{realname}-%{realversion}.tar.gz
+Patch0: 0001-Stop-enforcing-obsolete-limits-on-partition-count.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -62,6 +63,7 @@ configuration.
 
 %prep
 %setup -q -n %{realname}-%{realversion}
+%patch0 -p1
 
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -81,6 +83,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Fri Jun 30 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.9-2
+- Stop enforcing obsolete limits on partition count (dlehman)
+
 * Thu Jun 01 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.9-1
 - Adapt to logging module name change (mkolman)
 - Updated calls to avoid log spamming (japokorn)

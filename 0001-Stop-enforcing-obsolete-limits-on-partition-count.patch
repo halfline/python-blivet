@@ -1,0 +1,47 @@
+From 4b8bcadc43ed78a0eedb8e330684c626ef8b9d89 Mon Sep 17 00:00:00 2001
+From: David Lehman <dlehman@redhat.com>
+Date: Wed, 21 Jun 2017 15:36:42 -0400
+Subject: [PATCH] Stop enforcing obsolete limits on partition count. (#1460668)
+
+---
+ blivet/partitioning.py     | 10 ++++------
+ tests/partitioning_test.py | 20 +++++++++-----------
+ 2 files changed, 13 insertions(+), 17 deletions(-)
+
+diff --git a/blivet/partitioning.py b/blivet/partitioning.py
+index 05cb4c6..0a973e9 100644
+--- a/blivet/partitioning.py
++++ b/blivet/partitioning.py
+@@ -136,8 +136,6 @@ def get_next_partition_type(disk, no_primary=None):
+     part_type = None
+     extended = disk.getExtendedPartition()
+     supports_extended = disk.supportsFeature(parted.DISK_TYPE_EXTENDED)
+-    logical_count = len(disk.getLogicalPartitions())
+-    max_logicals = disk.getMaxLogicalPartitions()
+     primary_count = disk.primaryPartitionCount
+
+     if primary_count < disk.maxPrimaryPartitionCount:
+@@ -153,17 +151,17 @@ def get_next_partition_type(disk, no_primary=None):
+                 # there is an extended and a free primary
+                 if not no_primary:
+                     part_type = parted.PARTITION_NORMAL
+-                elif logical_count < max_logicals:
+-                    # we have an extended with logical slots, so use one.
++                else:
++                    # we have an extended, so use it.
+                     part_type = parted.PARTITION_LOGICAL
+         else:
+             # there are two or more primary slots left. use one unless we're
+             # not supposed to make primaries.
+             if not no_primary:
+                 part_type = parted.PARTITION_NORMAL
+-            elif extended and logical_count < max_logicals:
++            elif extended:
+                 part_type = parted.PARTITION_LOGICAL
+-    elif extended and logical_count < max_logicals:
++    elif extended:
+         part_type = parted.PARTITION_LOGICAL
+
+     return part_type
+--
+1.8.3.1
