@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: https://www-rhstorage.rhcloud.com/projects/blivet
-Version: 2.1.10
+Version: 2.1.11
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
@@ -16,10 +16,8 @@ Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realver
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
 %global pykickstartver 1.99.22
-%global pocketlintver 0.4
 %global partedver 1.8.1
 %global pypartedver 3.10.4
-%global e2fsver 1.41.0
 %global utillinuxver 2.15.1
 %global libblockdevver 2.6
 %global libbytesizever 0.3
@@ -27,7 +25,6 @@ Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realver
 
 BuildArch: noarch
 BuildRequires: gettext
-BuildRequires: python3-pocketlint >= %{pocketlintver}
 BuildRequires: python3-devel python3-setuptools
 
 %description
@@ -47,8 +44,6 @@ Requires: python3-blockdev >= %{libblockdevver}
 Requires: libblockdev-plugins-all >= %{libblockdevver}
 Requires: python3-bytesize >= %{libbytesizever}
 Requires: util-linux >= %{utillinuxver}
-Requires: dosfstools
-Requires: e2fsprogs >= %{e2fsver}
 Requires: lsof
 Requires: python3-gobject-base
 Requires: systemd-udev
@@ -66,8 +61,6 @@ rm -rf %{py3dir}
 cp -a . %{py3dir}
 
 %build
-# don't try to regenerate blivet.pot as part of the rpm build.
-touch po/blivet.pot
 make
 
 %install
@@ -80,6 +73,17 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Tue Sep 19 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.11-1
+- Remove build requires for pocketlint (rkuska)
+- edd_test: don't run on non-x86 (pjones)
+- Added support for device tags (japokorn)
+- fcoe: don't use dcb for autoconnecting of bnx2x and bnx2fc (#1261703)
+  (rvykydal)
+- fcoe: replace fipvlan with fcoemon (#1085325) (rvykydal)
+- Do not use read-only mode for e2fsck (vpodzime)
+- Fixed behavior when selinux is disabled (japokorn)
+- Do file system check before resize (#1484575) (vpodzime)
+
 * Thu Aug 17 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.10-1
 - Use addCleanup for test cleanup instead of clening in tearDown (vtrefny)
 - No longer skip test w/o selinux; mocked (japokorn)
@@ -107,12 +111,6 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 - Expand coverage of devices_test.dependencies_test a bit. (dlehman)
 - Account for external dep availabilty in StorageDevice.controllable. (dlehman)
 - Add the appropriate external dependency to LUKSDevice. (dlehman)
-
-* Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:2.1.9-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
-
-* Fri Jun 30 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.9-2
-- Stop enforcing obsolete limits on partition count (dlehman)
 
 * Thu Jun 01 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.9-1
 - Adapt to logging module name change (mkolman)
