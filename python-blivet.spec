@@ -5,7 +5,7 @@ Version: 2.1.11
 
 #%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 1%{?prerelease}%{?dist}
+Release: 3%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -61,6 +61,8 @@ rm -rf %{py3dir}
 cp -a . %{py3dir}
 
 %build
+# don't try to regenerate blivet.pot as part of the rpm build.
+touch po/blivet.pot
 make
 
 %install
@@ -73,6 +75,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{python3_sitelib}/*
 
 %changelog
+* Wed Oct  4 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.11-3
+- Bump release number to fix upgradepath
+
 * Tue Sep 19 2017 Vojtech Trefny <vtrefny@redhat.com> - 2.1.11-1
 - Remove build requires for pocketlint (rkuska)
 - edd_test: don't run on non-x86 (pjones)
