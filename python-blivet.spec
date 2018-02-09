@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.1%{?prerelease}%{?dist}
+Release: 0.2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -165,6 +165,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.0-0.2.b1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Nov 08 2017 David Lehman <dlehman@redhat.com> - 3.0.0-0.1.b1
 - Add some reasonable default value for LANG variable in size_test (vtrefny)
 - Remove ksdata from Blivet. (dlehman)
