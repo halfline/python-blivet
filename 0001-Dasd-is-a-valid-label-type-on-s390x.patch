@@ -1,0 +1,25 @@
+From 4c58ccbd1aba4904d8d33ce5699b43bbaaffa9ec Mon Sep 17 00:00:00 2001
+From: Vendula Poncova <vponcova@redhat.com>
+Date: Tue, 27 Feb 2018 13:49:10 +0100
+Subject: [PATCH] Dasd is a valid label type on s390x (#1538550)
+
+Add the dasd label type to the list of valid label types for s390x.
+This bug was introduced in the commit ebd43b6.
+
+Resolves: rhbz#1538550
+---
+ blivet/formats/disklabel.py          | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/blivet/formats/disklabel.py b/blivet/formats/disklabel.py
+index 6251fceb..44f9834c 100644
+--- a/blivet/formats/disklabel.py
++++ b/blivet/formats/disklabel.py
+@@ -226,7 +226,7 @@ def get_platform_label_types(cls):
+         elif arch.is_efi() and not arch.is_aarch64():
+             label_types = ["gpt"]
+         elif arch.is_s390():
+-            label_types = ["msdos"]  # since 'dasd' is only for DASD, it isn't listed here
++            label_types = ["msdos", "dasd"]
+
+         return label_types

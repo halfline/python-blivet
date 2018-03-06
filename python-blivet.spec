@@ -14,13 +14,15 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.2%{?prerelease}%{?dist}
+Release: 0.3%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realversion}.tar.gz
+Patch0: 0001-Dasd-is-a-valid-label-type-on-s390x.patch
+Patch1: 0002-Do-not-try-to-update-potfile-during-make-all.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -56,7 +58,6 @@ Summary: A python3 package for examining and modifying storage configuration.
 %{?python_provide:%python_provide python3-%{realname}}
 
 BuildRequires: gettext
-BuildRequires: python3-pocketlint >= %{pocketlintver}
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 
@@ -89,7 +90,6 @@ Summary: A python2 package for examining and modifying storage configuration.
 %{?python_provide:%python_provide python2-%{realname}}
 
 BuildRequires: gettext
-BuildRequires: python2-pocketlint >= %{pocketlintver}
 BuildRequires: python2-devel
 
 %if %{is_rhel}
@@ -128,7 +128,7 @@ The python2-%{realname} is a python2 package for examining and modifying storage
 configuration.
 
 %prep
-%autosetup -n %{realname}-%{realversion}
+%autosetup -n %{realname}-%{realversion} -p1
 
 %build
 make PYTHON=%{__python2}
@@ -165,6 +165,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Tue Mar 06 2018 Vojtech Trefny <vtrefny@redhat.com> - 1:3.0.0-0.3.b1
+- Dasd is a valid label type on s390x (#1538550)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:3.0.0-0.2.b1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
