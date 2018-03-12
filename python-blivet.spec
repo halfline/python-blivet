@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.3%{?prerelease}%{?dist}
+Release: 0.4%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -23,6 +23,7 @@ Group: System Environment/Libraries
 Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realversion}.tar.gz
 Patch0: 0001-Dasd-is-a-valid-label-type-on-s390x.patch
 Patch1: 0002-Do-not-try-to-update-potfile-during-make-all.patch
+Patch2: 0003-Allow-device-specification-by-node-to-udev.get_devic.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -165,6 +166,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.4.b1
+- Allow device specification by node to udev.get_device. (#1524700)
+
 * Tue Mar 06 2018 Vojtech Trefny <vtrefny@redhat.com> - 1:3.0.0-0.3.b1
 - Dasd is a valid label type on s390x (#1538550)
 
