@@ -1,7 +1,7 @@
 %define is_rhel 0%{?rhel} != 0
 
 # python3 is not available on RHEL
-%if %{is_rhel}
+%if 0%{?rhel} != 0 && 0%{?rhel} <= 7
 %define with_python3 0
 %else
 %define with_python3 1
@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.4%{?prerelease}%{?dist}
+Release: 0.5%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -166,6 +166,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.5.b1
+- Fix conditional to enable python3.
+
 * Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.4.b1
 - Allow device specification by node to udev.get_device. (#1524700)
 
