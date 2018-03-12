@@ -1,7 +1,7 @@
-%define is_rhel 0%{?rhel} != 0
+%define is_rhel67 0%{?rhel} != 0 && 0%{?rhel} <= 7
 
-# python3 is not available on RHEL
-%if 0%{?rhel} != 0 && 0%{?rhel} <= 7
+# python3 is not available on RHEL 6/7
+%if %{is_rhel67}
 %define with_python3 0
 %else
 %define with_python3 1
@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.5%{?prerelease}%{?dist}
+Release: 0.6%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -93,7 +93,7 @@ Summary: A python2 package for examining and modifying storage configuration.
 BuildRequires: gettext
 BuildRequires: python2-devel
 
-%if %{is_rhel}
+%if %{is_rhel67}
 BuildRequires: python-setuptools
 %else
 BuildRequires: python2-setuptools
@@ -113,7 +113,7 @@ Requires: lsof
 Requires: python-hawkey
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
-%if %{is_rhel}
+%if %{is_rhel67}
 Requires: udev
 Requires: pygobject3
 %else
@@ -166,6 +166,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.6.b1
+- Follow up on fix of conditional to enable python3.
+
 * Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.5.b1
 - Fix conditional to enable python3.
 
