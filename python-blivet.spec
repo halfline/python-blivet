@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.4%{?prerelease}%{?dist}
+Release: 0.5%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -100,17 +100,17 @@ BuildRequires: python2-setuptools
 %endif
 
 Requires: python2
-Requires: python-six
-Requires: python-pyudev >= %{pyudevver}
+Requires: python2-six
+Requires: python2-pyudev >= %{pyudevver}
 Requires: parted >= %{partedver}
-Requires: pyparted >= %{pypartedver}
-Requires: libselinux-python
-Requires: python-blockdev >= %{libblockdevver}
+Requires: python2-pyparted >= %{pypartedver}
+Requires: python2-libselinux
+Requires: python2-blockdev >= %{libblockdevver}
 Requires: libblockdev-plugins-all >= %{libblockdevver}
-Requires: python-bytesize >= %{libbytesizever}
+Requires: python2-bytesize >= %{libbytesizever}
 Requires: util-linux >= %{utillinuxver}
 Requires: lsof
-Requires: python-hawkey
+Requires: python2-hawkey
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
 %if %{is_rhel}
@@ -118,7 +118,7 @@ Requires: udev
 Requires: pygobject3
 %else
 Requires: systemd-udev
-Requires: python-gobject-base
+Requires: python2-gobject-base
 %endif
 
 Obsoletes: blivet-data < 1:2.0.0
@@ -166,6 +166,10 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sat Mar 17 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1:3.0.0-0.5.b1
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Mon Mar 12 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.4.b1
 - Allow device specification by node to udev.get_device. (#1524700)
 
