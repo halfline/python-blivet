@@ -14,7 +14,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.5%{?prerelease}%{?dist}
+Release: 0.6%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -24,6 +24,7 @@ Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realver
 Patch0: 0001-Dasd-is-a-valid-label-type-on-s390x.patch
 Patch1: 0002-Do-not-try-to-update-potfile-during-make-all.patch
 Patch2: 0003-Allow-device-specification-by-node-to-udev.get_devic.patch
+Patch3: 0004-Don-t-use-a-wwn-kwarg-for-MDBiosRaidArrayDevice-1557.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -166,6 +167,9 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Tue Mar 20 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.6.b1
+- Don't use a 'wwn' kwarg for MDBiosRaidArrayDevice (#1557957) (awilliam)
+
 * Sat Mar 17 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1:3.0.0-0.5.b1
 - Update Python 2 dependency declarations to new packaging standards
   (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
