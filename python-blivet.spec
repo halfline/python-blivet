@@ -1,10 +1,19 @@
 %define is_rhel 0%{?rhel} != 0
 
-# python3 is not available on RHEL
-%if %{is_rhel}
-%define with_python3 0
+# python3 is not available on RHEL <=7
+%if %{is_rhel} && 0%{?rhel} <= 7
+# disable python3 by default
+%bcond_with python3
 %else
-%define with_python3 1
+%bcond_without python3
+%endif
+
+# python2 is not available on RHEL > 7 and not needed on Fedora > 28
+%if 0%{?rhel} > 7 || 0%{?fedora} > 28
+# disable python2 by default
+%bcond_with python2
+%else
+%bcond_without python2
 %endif
 
 Summary:  A python module for system storage configuration
@@ -14,7 +23,7 @@ Version: 3.0.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.6%{?prerelease}%{?dist}
+Release: 0.6.1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -53,7 +62,7 @@ Conflicts: python3-blivet < 1:2.0.0
 The %{realname}-data package provides data files required by the %{realname}
 python module.
 
-%if %{with_python3}
+%if %{with python3}
 %package -n python3-%{realname}
 Summary: A python3 package for examining and modifying storage configuration.
 
@@ -79,13 +88,20 @@ Requires: systemd-udev
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
 Obsoletes: blivet-data < 1:2.0.0
+
+%if %{without python2}
+Obsoletes: python2-blivet < 1:3.0.0-0.6
+Obsoletes: python-blivet < 1:3.0.0-0.6
+%else
 Obsoletes: python-blivet < 1:2.0.0
+%endif
 
 %description -n python3-%{realname}
 The python3-%{realname} is a python3 package for examining and modifying storage
 configuration.
 %endif
 
+%if %{with python2}
 %package -n python2-%{realname}
 Summary: A python2 package for examining and modifying storage configuration.
 
@@ -128,23 +144,18 @@ Obsoletes: python-blivet < 1:2.0.0
 %description -n python2-%{realname}
 The python2-%{realname} is a python2 package for examining and modifying storage
 configuration.
+%endif
 
 %prep
 %autosetup -n %{realname}-%{realversion} -p1
 
 %build
-make PYTHON=%{__python2}
-
-%if %{with_python3}
-make PYTHON=%{__python3}
-%endif
+%{?with_python2:make PYTHON=%{__python2}}
+%{?with_python3:make PYTHON=%{__python3}}
 
 %install
-make PYTHON=%{__python2} DESTDIR=%{buildroot} install
-
-%if %{with_python3}
-make PYTHON=%{__python3} DESTDIR=%{buildroot} install
-%endif
+%{?with_python2:make PYTHON=%{__python2} DESTDIR=%{buildroot} install}
+%{?with_python3:make PYTHON=%{__python3} DESTDIR=%{buildroot} install}
 
 %find_lang %{realname}
 
@@ -154,12 +165,14 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %{_libexecdir}/*
 %{_unitdir}/*
 
+%if %{with python2}
 %files -n python2-%{realname}
 %license COPYING
 %doc README ChangeLog examples
 %{python2_sitelib}/*
+%endif
 
-%if %{with_python3}
+%if %{with python3}
 %files -n python3-%{realname}
 %license COPYING
 %doc README ChangeLog examples
@@ -167,6 +180,10 @@ make PYTHON=%{__python3} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Apr 02 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.6.1.b1
+- Use bcond for with python3, allow it on RHEL > 7 (mhroncok)
+- Conditionalize the Python 2 subpackage and don't build it on EL > 7 and Fedora > 28 (mhroncok)
+
 * Tue Mar 20 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.6.b1
 - Don't use a 'wwn' kwarg for MDBiosRaidArrayDevice (#1557957) (awilliam)
 
