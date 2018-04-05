@@ -1,0 +1,32 @@
+From 9dfe3cfa695f788716655e51915dfb4fa9d8fcd6 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Mon, 19 Mar 2018 16:48:38 -0700
+Subject: [PATCH] Don't use a 'wwn' kwarg for MDBiosRaidArrayDevice (#1557957)
+
+MDBiosRaidArrayDevice's parent class doesn't take a 'wwn' kwarg,
+so the populator for it shouldn't pass one.
+
+For more details, see comment 15 on the bug.
+
+Resolves: rhbz#1557957
+
+Signed-off-by: Adam Williamson <awilliam@redhat.com>
+---
+ blivet/populator/helpers/disk.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/blivet/populator/helpers/disk.py b/blivet/populator/helpers/disk.py
+index e2757b12..6c03f698 100644
+--- a/blivet/populator/helpers/disk.py
++++ b/blivet/populator/helpers/disk.py
+@@ -172,6 +172,7 @@ class MDBiosRaidDevicePopulator(DiskDevicePopulator):
+         del kwargs["serial"]
+         del kwargs["vendor"]
+         del kwargs["bus"]
++        del kwargs["wwn"]
+         return kwargs
+ 
+ 
+-- 
+2.14.3
+
