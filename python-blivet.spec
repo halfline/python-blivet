@@ -18,22 +18,18 @@
 
 Summary:  A python module for system storage configuration
 Name: python-blivet
-Url: https://www-rhstorage.rhcloud.com/projects/blivet
-Version: 3.0.0
+Url: https://storageapis.wordpress.com/projects/blivet
+Version: 3.0.1
 
-%global prerelease .b1
+#%%global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.6.1%{?prerelease}%{?dist}
+Release: 1%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realversion}.tar.gz
-Patch0: 0001-Dasd-is-a-valid-label-type-on-s390x.patch
-Patch1: 0002-Do-not-try-to-update-potfile-during-make-all.patch
-Patch2: 0003-Allow-device-specification-by-node-to-udev.get_devic.patch
-Patch3: 0004-Don-t-use-a-wwn-kwarg-for-MDBiosRaidArrayDevice-1557.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -79,7 +75,18 @@ Requires: parted >= %{partedver}
 Requires: python3-pyparted >= %{pypartedver}
 Requires: libselinux-python3
 Requires: python3-blockdev >= %{libblockdevver}
-Requires: libblockdev-plugins-all >= %{libblockdevver}
+Recommends: libblockdev-btrfs >= %{libblockdevver}
+Recommends: libblockdev-crypto >= %{libblockdevver}
+Recommends: libblockdev-dm >= %{libblockdevver}
+Recommends: libblockdev-fs >= %{libblockdevver}
+Recommends: libblockdev-kbd >= %{libblockdevver}
+Recommends: libblockdev-loop >= %{libblockdevver}
+Recommends: libblockdev-lvm >= %{libblockdevver}
+Recommends: libblockdev-mdraid >= %{libblockdevver}
+Recommends: libblockdev-mpath >= %{libblockdevver}
+Recommends: libblockdev-part >= %{libblockdevver}
+Recommends: libblockdev-swap >= %{libblockdevver}
+Recommends: libblockdev-s390 >= %{libblockdevver}
 Requires: python3-bytesize >= %{libbytesizever}
 Requires: util-linux >= %{utillinuxver}
 Requires: lsof
@@ -90,8 +97,8 @@ Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 Obsoletes: blivet-data < 1:2.0.0
 
 %if %{without python2}
-Obsoletes: python2-blivet < 1:3.0.0-0.6
-Obsoletes: python-blivet < 1:3.0.0-0.6
+Obsoletes: python2-blivet < 1:2.0.2-2
+Obsoletes: python-blivet < 1:2.0.2-2
 %else
 Obsoletes: python-blivet < 1:2.0.0
 %endif
@@ -109,12 +116,7 @@ Summary: A python2 package for examining and modifying storage configuration.
 
 BuildRequires: gettext
 BuildRequires: python2-devel
-
-%if %{is_rhel}
-BuildRequires: python-setuptools
-%else
 BuildRequires: python2-setuptools
-%endif
 
 Requires: python2
 Requires: python2-six
@@ -123,20 +125,26 @@ Requires: parted >= %{partedver}
 Requires: python2-pyparted >= %{pypartedver}
 Requires: python2-libselinux
 Requires: python2-blockdev >= %{libblockdevver}
-Requires: libblockdev-plugins-all >= %{libblockdevver}
+Recommends: libblockdev-btrfs >= %{libblockdevver}
+Recommends: libblockdev-crypto >= %{libblockdevver}
+Recommends: libblockdev-dm >= %{libblockdevver}
+Recommends: libblockdev-fs >= %{libblockdevver}
+Recommends: libblockdev-kbd >= %{libblockdevver}
+Recommends: libblockdev-loop >= %{libblockdevver}
+Recommends: libblockdev-lvm >= %{libblockdevver}
+Recommends: libblockdev-mdraid >= %{libblockdevver}
+Recommends: libblockdev-mpath >= %{libblockdevver}
+Recommends: libblockdev-part >= %{libblockdevver}
+Recommends: libblockdev-swap >= %{libblockdevver}
+Recommends: libblockdev-s390 >= %{libblockdevver}
 Requires: python2-bytesize >= %{libbytesizever}
 Requires: util-linux >= %{utillinuxver}
 Requires: lsof
 Requires: python2-hawkey
 Requires: %{realname}-data = %{epoch}:%{version}-%{release}
 
-%if %{is_rhel}
-Requires: udev
-Requires: pygobject3
-%else
 Requires: systemd-udev
 Requires: python2-gobject-base
-%endif
 
 Obsoletes: blivet-data < 1:2.0.0
 Obsoletes: python-blivet < 1:2.0.0
@@ -180,6 +188,30 @@ configuration.
 %endif
 
 %changelog
+* Fri Apr 20 2018 David Lehman <dlehman@redhat.com> - 3.0.1-1
+- Weak dependencies for libblockdev plugins (japokorn)
+- Translate log levels from libblockdev to python log levels (vtrefny)
+- Try to wait after stopping an MD array (vtrefny)
+- Replace deprecated iscsi_firmware dracut option (rvykydal)
+- Fix how we check return value for call_sync in safe_dbus (vtrefny)
+- Conditionalize the Python 2 subpackage and don't build it on EL > 7 and
+  Fedora > 28 (miro)
+- Fix python3 conditional in rpm spec file. (dlehman)
+- Fix upstream URL in spec (vtrefny)
+- Allow device specification by node to udev.get_device. (#1524700) (dlehman)
+- Do not try to update potfile during make all (vtrefny)
+- Use '-p1' when applying patches with autosetup (vtrefny)
+- Remove dependency on pocketlint (vtrefny)
+- Dasd is a valid label type on s390x (#1538550) (vponcova)
+- fcoe: remove /etc/fcoe dir if it exists before copying configuration
+  (#1542846) (rvykydal)
+- Avoid UnitTest.subTest due to python2 incompatibility. (dlehman)
+- Adapt action test mock imports for compatibility w/ python2 & python3.
+  (dlehman)
+- Use explicit super() syntax in config actions for py2 compat. (dlehman)
+- Use libblockdev runtime dependency checks (#1501249) (vtrefny)
+- Fix minor typos (yurchor)
+
 * Mon Apr 02 2018 David Lehman <dlehman@redhat.com> - 1:3.0.0-0.6.1.b1
 - Use bcond for with python3, allow it on RHEL > 7 (mhroncok)
 - Conditionalize the Python 2 subpackage and don't build it on EL > 7 and Fedora > 28 (mhroncok)
