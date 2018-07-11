@@ -23,13 +23,14 @@ Version: 3.1.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.1%{?prerelease}%{?dist}
+Release: 0.2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
 %global realname blivet
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realversion}.tar.gz
+Patch0: 0001-force-lvm-cli.plugin
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -190,6 +191,9 @@ configuration.
 %endif
 
 %changelog
+* Wed Jul 11 2018 Vojtech Trefny <vtrefny@redhat.com> - 3.1.0-0.2.b1
+- Force command line based libblockdev LVM plugin (vtrefny)
+
 * Wed May 02 2018 David Lehman <dlehman@redhat.com> - 3.1.0-0.1.b1
 - Add 'nvdimm' tag for NVDIMM namespaces (vtrefny)
 - Add test for NVDIMMNamespaceDevicePopulator (vtrefny)
