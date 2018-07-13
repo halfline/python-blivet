@@ -1,0 +1,65 @@
+From c02aa1294f1d7ed88c50ec89a0b796660904f761 Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Fri, 13 Jul 2018 14:55:35 -0400
+Subject: [PATCH] mkfs: disable reflink/spinodes features with xfs
+
+xfs's reflink and sparse inodes features don't work with older kernels,
+like we use on the builders.
+
+Now that xfsprogs defaults to those features on, we need to explicitly
+turn them off.
+---
+ blivet/tasks/fsmkfs.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/blivet/tasks/fsmkfs.py b/blivet/tasks/fsmkfs.py
+index ad166aa..baef735 100644
+--- a/blivet/tasks/fsmkfs.py
++++ b/blivet/tasks/fsmkfs.py
+@@ -268,42 +268,42 @@ class NTFSMkfs(FSMkfs):
+     ext = availability.MKNTFS_APP
+     label_option = "-L"
+     get_uuid_args = None
+ 
+     @property
+     def args(self):
+         return []
+ 
+ 
+ class ReiserFSMkfs(FSMkfs):
+     ext = availability.MKREISERFS_APP
+     label_option = "-l"
+ 
+     def get_uuid_args(self, uuid):
+         return ["-u", uuid]
+ 
+     @property
+     def args(self):
+         return ["-f", "-f"]
+ 
+ 
+ class XFSMkfs(FSMkfs):
+     ext = availability.MKFS_XFS_APP
+     label_option = "-L"
+ 
+     def get_uuid_args(self, uuid):
+         return ["-m", "uuid=" + uuid]
+ 
+     @property
+     def args(self):
+-        return ["-f"]
++        return ["-f", "-m", "reflink=0", "-i", "sparse=0"]
+ 
+ 
+ class UnimplementedFSMkfs(task.UnimplementedTask, FSMkfsTask):
+ 
+     @property
+     def can_label(self):
+         return False
+ 
+     @property
+     def can_set_uuid(self):
+         return False
+-- 
+2.17.1
+
