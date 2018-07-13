@@ -23,7 +23,7 @@ Version: 3.1.0
 
 %global prerelease .b1
 # prerelease, if defined, should be something like .a1, .b1, .b2.dev1, or .c2
-Release: 0.3%{?prerelease}%{?dist}
+Release: 0.2%{?prerelease}%{?dist}
 Epoch: 1
 License: LGPLv2+
 Group: System Environment/Libraries
@@ -31,7 +31,6 @@ Group: System Environment/Libraries
 %global realversion %{version}%{?prerelease}
 Source0: http://github.com/storaged-project/blivet/archive/%{realname}-%{realversion}.tar.gz
 Patch0: 0001-force-lvm-cli.plugin
-Patch1: 0001-mkfs-disable-reflink-feature-with-xfs.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -192,9 +191,6 @@ configuration.
 %endif
 
 %changelog
-* Fri Jul 13 2018 Ray Strode <rstrode@redhat.com> - 3.1.0-0.3.b1
-- disable reflink/spinode support with xfs
-
 * Wed Jul 11 2018 Vojtech Trefny <vtrefny@redhat.com> - 3.1.0-0.2.b1
 - Force command line based libblockdev LVM plugin (vtrefny)
 
